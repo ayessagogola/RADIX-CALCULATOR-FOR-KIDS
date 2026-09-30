@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Notepad - Base Converter</title>
+    <title>Math Notepad - Base Converter & Solver</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Playful & Handwritten Style -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Gaegu:wght@400;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
@@ -20,17 +20,23 @@
             color: #2d3748;
         }
 
-        .handwritten {
-            font-family: 'Gaegu', cursive;
-        }
-
         /* Lined Notebook Paper Effect */
         .notebook-page {
             background: #ffffff;
             background-image: linear-gradient(#e2e8f0 1px, transparent 1px);
             background-size: 100% 2rem;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            border-left: 3px solid #f87171; /* Red margin line */
+            border-left: 3px solid #f87171;
+            position: relative;
+        }
+
+        /* Grid Notebook Paper Effect */
+        .grid-notebook-page {
+            background: #ffffff;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-left: 3px solid #3b82f6;
             position: relative;
         }
 
@@ -52,7 +58,7 @@
             box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Input and Button Customization */
+        /* Inputs and Buttons */
         input, select {
             border: 2px dashed #94a3b8 !important;
             background-color: #feffe7 !important;
@@ -77,6 +83,31 @@
             transform: translateY(1px) rotate(0deg);
         }
 
+        .op-btn {
+            transition: all 0.15s ease;
+        }
+        .op-btn.active-op {
+            background-color: #10b981 !important;
+            color: white !important;
+            border-color: #047857 !important;
+            transform: scale(1.05);
+        }
+
+        /* Long Division Visual Styling */
+        .long-div-table {
+            font-family: monospace;
+            border-collapse: collapse;
+            line-height: 1.25;
+            margin: 0 auto;
+        }
+        .long-div-table td {
+            padding: 2px 6px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .div-roof { border-top: 2px solid #059669; }
+        .div-bracket { border-left: 2px solid #059669; border-top-left-radius: 4px; }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -86,27 +117,24 @@
 <body class="min-h-screen py-8 px-4 sm:px-6">
 
     <div class="max-w-5xl mx-auto">
-        <!-- Top Navigation Tabs (Notebook Pages) -->
+        <!-- Navigation Tabs -->
         <div class="flex items-center gap-3 ml-6 mb-[-2px] relative z-20">
-            <a href="page1_converter.html" class="bg-white border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-blue-600 shadow-sm flex items-center gap-2">
+            <button id="tab1Btn" onclick="switchTab(1)" class="bg-white border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-blue-600 shadow-sm flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-pencil text-amber-500"></i> Page 1: Base Converter
-            </a>
-            <a href="page2_arithmetic.html" class="bg-slate-200 border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all">
+            </button>
+            <button id="tab2Btn" onclick="switchTab(2)" class="bg-slate-200 border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all cursor-pointer">
                 <i class="fa-solid fa-calculator text-emerald-500"></i> Page 2: Math Solver
-            </a>
+            </button>
         </div>
 
-        <!-- Main Notebook Page -->
-        <div class="notebook-page rounded-2xl rounded-tl-none p-6 md:p-10 pl-10 md:pl-16 border-2 border-slate-300">
-            
-            <!-- Spiral Binding Visuals -->
+        <!-- PAGE 1: BASE CONVERTER -->
+        <div id="page1View" class="notebook-page rounded-2xl rounded-tl-none p-6 md:p-10 pl-10 md:pl-16 border-2 border-slate-300">
             <div class="spiral-binding hidden sm:flex">
                 <div class="ring"></div><div class="ring"></div><div class="ring"></div>
                 <div class="ring"></div><div class="ring"></div><div class="ring"></div>
                 <div class="ring"></div><div class="ring"></div><div class="ring"></div>
             </div>
 
-            <!-- Page Header -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-blue-200 pb-4 mb-6 gap-4">
                 <div>
                     <span class="inline-block bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
@@ -117,7 +145,6 @@
                     </h1>
                 </div>
 
-                <!-- Precision Control -->
                 <div class="flex items-center gap-2 bg-yellow-100 border-2 border-yellow-300 px-3 py-1.5 rounded-xl text-sm font-semibold text-yellow-900">
                     <i class="fa-solid fa-sliders"></i>
                     <label for="precisionSelect">Decimals:</label>
@@ -129,8 +156,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Left Column: Inputs -->
                 <div class="lg:col-span-5 space-y-6">
                     <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-5 space-y-4">
                         <div>
@@ -145,7 +170,6 @@
                             </div>
                         </div>
 
-                        <!-- Base Selectors -->
                         <div class="grid grid-cols-1 gap-3">
                             <div>
                                 <label for="sourceBase" class="block text-xs font-bold text-slate-600 mb-1">Start Base (From):</label>
@@ -164,7 +188,6 @@
                             </div>
                         </div>
 
-                        <!-- Presets -->
                         <div class="pt-2 border-t border-sky-200">
                             <span class="text-xs font-bold text-sky-800 block mb-2">Quick Base Buttons:</span>
                             <div class="grid grid-cols-4 gap-1.5">
@@ -176,7 +199,6 @@
                         </div>
                     </div>
 
-                    <!-- Output Box -->
                     <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 shadow-sm space-y-2">
                         <div class="flex justify-between items-center">
                             <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">🎉 Final Answer:</span>
@@ -191,91 +213,149 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Interactive Solution -->
                 <div class="lg:col-span-7 space-y-6">
                     <div class="bg-purple-50 border-2 border-purple-200 rounded-2xl p-5 space-y-4">
                         <div class="flex items-center justify-between border-b border-purple-200 pb-2">
-                            <h3 class="font-bold text-purple-900 text-sm flex items-center gap-2">
-                                🌟 Step-by-Step Breakdown
-                            </h3>
+                            <h3 class="font-bold text-purple-900 text-sm flex items-center gap-2">🌟 Step-by-Step Breakdown</h3>
                             <span class="text-xs text-purple-600 font-semibold">How it works</span>
                         </div>
 
-                        <!-- Arrow Solution Box -->
-                        <div id="arrowSolutionContainer" class="overflow-x-auto min-h-[180px] font-mono text-xs">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="arrowSolutionContainer" class="overflow-x-auto min-h-[180px] font-mono text-xs"></div>
 
-                        <!-- Positional Addition Box -->
                         <div id="positionalSumBox" class="hidden p-4 rounded-xl bg-white border border-purple-200 space-y-2">
-                            <div class="text-xs font-bold text-purple-800 border-b pb-1">
-                                Summing Up the Values:
-                            </div>
+                            <div class="text-xs font-bold text-purple-800 border-b pb-1">Summing Up the Values:</div>
                             <div id="verticalPositionalSumList" class="space-y-1 text-xs text-slate-700"></div>
                         </div>
                     </div>
 
-                    <!-- Long Division Box -->
                     <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-5 space-y-3">
                         <div class="border-b border-orange-200 pb-2">
-                            <h3 class="font-bold text-orange-900 text-sm flex items-center gap-2">
-                                🧮 Conversion Steps (Division & Multiplication)
-                            </h3>
+                            <h3 class="font-bold text-orange-900 text-sm flex items-center gap-2">🧮 Conversion Steps (Division & Multiplication)</h3>
                         </div>
                         <div id="longDivisionContainer" class="space-y-4 overflow-y-auto max-h-[300px] text-xs"></div>
                     </div>
                 </div>
-
             </div>
         </div>
+
+        <!-- PAGE 2: MATH SOLVER -->
+        <div id="page2View" class="grid-notebook-page hidden rounded-2xl rounded-tl-none p-6 md:p-10 pl-10 md:pl-16 border-2 border-slate-300">
+            <div class="spiral-binding hidden sm:flex">
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-emerald-200 pb-4 mb-6 gap-4">
+                <div>
+                    <span class="inline-block bg-emerald-200 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">📐 Math Lab Work</span>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center gap-3">Any-Base Arithmetic Solver ➕➖</h1>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="arithSourceBase" class="block text-xs font-bold text-emerald-900 mb-1">Input Base:</label>
+                                <select id="arithSourceBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                            </div>
+                            <div>
+                                <label for="arithTargetBase" class="block text-xs font-bold text-emerald-900 mb-1">Answer Base:</label>
+                                <select id="arithTargetBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="operand1" class="block text-xs font-bold text-slate-700 mb-1">First Number (Top):</label>
+                            <input type="text" id="operand1" value="1011.101" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Choose Operation:</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button class="op-btn active-op bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="+">+</button>
+                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="-">−</button>
+                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="*">×</button>
+                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="/">÷</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="operand2" class="block text-xs font-bold text-slate-700 mb-1">Second Number (Bottom):</label>
+                            <input type="text" id="operand2" value="10.11" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-2xl p-5 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-blue-900 uppercase">🎯 Result Answer:</span>
+                            <span id="arithTargetRadixBadge" class="bg-blue-200 text-blue-900 font-bold text-xs px-2.5 py-0.5 rounded-full">Base 2</span>
+                        </div>
+                        <div class="bg-white border-2 border-blue-200 rounded-xl p-4 flex items-center justify-between">
+                            <div>
+                                <div id="arithResultValue" class="font-mono text-2xl font-extrabold text-blue-600 break-all">--</div>
+                                <div id="arithDecEquivalent" class="text-xs font-bold text-slate-500 mt-1">Decimal: --</div>
+                            </div>
+                            <button id="copyArithResultBtn" class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-lg text-xs" title="Copy Answer">
+                                <i class="fa-regular fa-copy text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                            <h3 id="solutionPanelTitle" class="font-bold text-amber-900 text-sm flex items-center gap-2">📝 Vertical Column Alignment</h3>
+                            <span id="matrixBaseLabel" class="text-xs font-bold bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full">Base 2</span>
+                        </div>
+
+                        <div id="twoLayerArithmeticBox" class="p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto"></div>
+                        <div id="arithLongDivBox" class="hidden p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         const RADIX_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        const inputValue = document.getElementById('inputValue');
-        const outputValue = document.getElementById('outputValue');
-        const sourceBase = document.getElementById('sourceBase');
-        const targetBase = document.getElementById('targetBase');
-        const swapBasesBtn = document.getElementById('swapBasesBtn');
-        const copyResultBtn = document.getElementById('copyResultBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
-        const targetRadixBadge = document.getElementById('targetRadixBadge');
-        const precisionSelect = document.getElementById('precisionSelect');
-        const arrowSolutionContainer = document.getElementById('arrowSolutionContainer');
-        const positionalSumBox = document.getElementById('positionalSumBox');
-        const verticalPositionalSumList = document.getElementById('verticalPositionalSumList');
-        const longDivisionContainer = document.getElementById('longDivisionContainer');
+        // Tab Switcher Function
+        function switchTab(tabNum) {
+            const page1View = document.getElementById('page1View');
+            const page2View = document.getElementById('page2View');
+            const tab1Btn = document.getElementById('tab1Btn');
+            const tab2Btn = document.getElementById('tab2Btn');
 
-        function initBaseOptions() {
-            for (let b = 2; b <= 36; b++) {
-                let label = `Base ${b}`;
-                if (b === 2) label += " (Binary)";
-                else if (b === 8) label += " (Octal)";
-                else if (b === 10) label += " (Decimal)";
-                else if (b === 16) label += " (Hexadecimal)";
-
-                sourceBase.add(new Option(label, b));
-                targetBase.add(new Option(label, b));
+            if (tabNum === 1) {
+                page1View.classList.remove('hidden');
+                page2View.classList.add('hidden');
+                tab1Btn.className = "bg-white border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-blue-600 shadow-sm flex items-center gap-2 cursor-pointer";
+                tab2Btn.className = "bg-slate-200 border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all cursor-pointer";
+            } else {
+                page1View.classList.add('hidden');
+                page2View.classList.remove('hidden');
+                tab2Btn.className = "bg-white border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-emerald-600 shadow-sm flex items-center gap-2 cursor-pointer";
+                tab1Btn.className = "bg-slate-200 border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all cursor-pointer";
+                updateArithmetic();
             }
-            sourceBase.value = 2;
-            targetBase.value = 10;
         }
 
+        // Shared Logic
         function isValidRadixNumber(str, base) {
             if (!str) return true;
             const clean = str.trim().toUpperCase();
             const allowedDigits = RADIX_CHARS.slice(0, base);
             let dotCount = 0;
             for (let i = 0; i < clean.length; i++) {
-                const ch = clean[i];
-                if (ch === '.') {
+                if (clean[i] === '.') {
                     dotCount++;
                     if (dotCount > 1) return false;
-                } else if (!allowedDigits.includes(ch)) {
-                    return false;
-                }
+                } else if (!allowedDigits.includes(clean[i])) return false;
             }
             return true;
         }
@@ -330,10 +410,38 @@
             return fracStr.length > 0 ? `${intStr}.${fracStr}` : intStr;
         }
 
+        // --- PAGE 1 LOGIC ---
+        const inputValue = document.getElementById('inputValue');
+        const outputValue = document.getElementById('outputValue');
+        const sourceBase = document.getElementById('sourceBase');
+        const targetBase = document.getElementById('targetBase');
+        const swapBasesBtn = document.getElementById('swapBasesBtn');
+        const copyResultBtn = document.getElementById('copyResultBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const targetRadixBadge = document.getElementById('targetRadixBadge');
+        const precisionSelect = document.getElementById('precisionSelect');
+        const arrowSolutionContainer = document.getElementById('arrowSolutionContainer');
+        const positionalSumBox = document.getElementById('positionalSumBox');
+        const verticalPositionalSumList = document.getElementById('verticalPositionalSumList');
+        const longDivisionContainer = document.getElementById('longDivisionContainer');
+
+        function initPage1Bases() {
+            for (let b = 2; b <= 36; b++) {
+                let label = `Base ${b}`;
+                if (b === 2) label += " (Binary)";
+                else if (b === 8) label += " (Octal)";
+                else if (b === 10) label += " (Decimal)";
+                else if (b === 16) label += " (Hexadecimal)";
+                sourceBase.add(new Option(label, b));
+                targetBase.add(new Option(label, b));
+            }
+            sourceBase.value = 2;
+            targetBase.value = 10;
+        }
+
         function renderPositionalArrowSolution(str, base, decResult) {
             arrowSolutionContainer.innerHTML = '';
             verticalPositionalSumList.innerHTML = '';
-
             if (!str) return;
 
             const clean = str.trim().toUpperCase();
@@ -350,8 +458,6 @@
             }
 
             const totalDigits = digitEntries.length;
-            const formattedDecVal = decResult.toString();
-
             const charWidth = 28;
             const startX = 20;
             const rowHeight = 34;
@@ -360,15 +466,13 @@
             const svgHeight = topMargin + totalDigits * rowHeight + 40;
 
             let svgContent = `
-                <svg width="${minSvgWidth}" height="${svgHeight}" style="background: transparent;" xmlns="http://www.w3.org/2000/svg">
+                <svg width="${minSvgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
                             <path d="M 0 0 L 8 4 L 0 8 z" fill="#8b5cf6" />
                         </marker>
                     </defs>
-                    <text x="${startX}" y="28" fill="#6b21a8" font-size="16" font-weight="bold">
-                        ${clean} (Base ${base}) → ${formattedDecVal} (Base 10)
-                    </text>
+                    <text x="${startX}" y="28" fill="#6b21a8" font-size="16" font-weight="bold">${clean} (Base ${base}) → ${decResult} (Base 10)</text>
             `;
 
             let charPosMap = [];
@@ -403,14 +507,11 @@
                 const digitX = charPosMap[entryIdx];
                 const targetY = topMargin + (rowIdx + 1) * rowHeight;
                 const rightX = currentX + 15;
-
                 const prodVal = entry.digitVal * Math.pow(base, entry.power);
                 sumProductsList.push({ val: prodVal, digitChar: entry.char, power: entry.power });
 
                 svgContent += `<path d="M ${digitX} ${topMargin - 5} V ${targetY} H ${rightX - 10}" fill="none" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowhead)" />`;
-
-                let formulaStr = `${entry.digitVal} × ${base}<tspan font-size="10" dy="-5">${entry.power}</tspan><tspan dy="5"></tspan>`;
-                svgContent += `<text x="${rightX}" y="${targetY + 4}" fill="#475569" font-size="12" font-weight="bold">${formulaStr} = </text>`;
+                svgContent += `<text x="${rightX}" y="${targetY + 4}" fill="#475569" font-size="12" font-weight="bold">${entry.digitVal} × ${base}<tspan font-size="10" dy="-5">${entry.power}</tspan><tspan dy="5"></tspan> = </text>`;
                 svgContent += `<text x="${minSvgWidth - 60}" y="${targetY + 4}" fill="#10b981" font-size="13" font-weight="bold" text-anchor="end">${prodVal}</text>`;
             });
 
@@ -419,16 +520,9 @@
 
             let sumHTML = '';
             sumProductsList.forEach((item) => {
-                sumHTML += `<div class="flex justify-between border-b border-slate-100 pb-0.5">
-                    <span class="text-slate-500">(${item.digitChar} × ${base}<sup>${item.power}</sup>)</span>
-                    <span class="text-emerald-600 font-bold">${item.val}</span>
-                </div>`;
+                sumHTML += `<div class="flex justify-between border-b border-slate-100 pb-0.5"><span class="text-slate-500">(${item.digitChar} × ${base}<sup>${item.power}</sup>)</span><span class="text-emerald-600 font-bold">${item.val}</span></div>`;
             });
-            sumHTML += `<div class="flex justify-between pt-1 text-purple-900 font-extrabold border-t border-purple-200">
-                <span>Total:</span>
-                <span>${formattedDecVal}</span>
-            </div>`;
-
+            sumHTML += `<div class="flex justify-between pt-1 text-purple-900 font-extrabold border-t border-purple-200"><span>Total:</span><span>${decResult}</span></div>`;
             verticalPositionalSumList.innerHTML = sumHTML;
             positionalSumBox.classList.remove('hidden');
         }
@@ -438,12 +532,7 @@
             let intVal = Math.floor(Math.abs(decVal));
             let fracVal = Math.abs(decVal) - intVal;
 
-            let intHTML = `
-                <div class="space-y-1">
-                    <div class="font-bold text-orange-900">1. Divide Whole Numbers (÷ ${targetBaseVal}):</div>
-                    <div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 font-mono">
-            `;
-
+            let intHTML = `<div class="space-y-1"><div class="font-bold text-orange-900">1. Divide Whole Numbers (÷ ${targetBaseVal}):</div><div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 font-mono">`;
             let tempInt = intVal;
             let remainders = [];
 
@@ -460,16 +549,11 @@
                     tempInt = quot;
                 }
             }
-
             intHTML += `<div class="pt-1 font-bold text-emerald-600 border-t mt-1">Whole Part = ${remainders.reverse().join('')}</div></div></div>`;
 
             let fracHTML = '';
             if (fracVal > 0) {
-                fracHTML = `
-                    <div class="space-y-1">
-                        <div class="font-bold text-orange-900">2. Multiply Decimal Parts (× ${targetBaseVal}):</div>
-                        <div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 font-mono">
-                `;
+                fracHTML = `<div class="space-y-1"><div class="font-bold text-orange-900">2. Multiply Decimal Parts (× ${targetBaseVal}):</div><div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 font-mono">`;
                 let tempFrac = fracVal;
                 let fracDigits = [];
                 let count = 0;
@@ -487,7 +571,6 @@
                 }
                 fracHTML += `<div class="pt-1 font-bold text-emerald-600 border-t mt-1">Fraction Part = .${fracDigits.join('')}</div></div></div>`;
             }
-
             longDivisionContainer.innerHTML = intHTML + fracHTML;
         }
 
@@ -526,7 +609,134 @@
             renderLongDivisionSteps(decVal, tgtBase, prec);
         }
 
-        initBaseOptions();
+        // --- PAGE 2 LOGIC ---
+        const arithSourceBase = document.getElementById('arithSourceBase');
+        const arithTargetBase = document.getElementById('arithTargetBase');
+        const operand1 = document.getElementById('operand1');
+        const operand2 = document.getElementById('operand2');
+        const arithResultValue = document.getElementById('arithResultValue');
+        const arithDecEquivalent = document.getElementById('arithDecEquivalent');
+        const arithTargetRadixBadge = document.getElementById('arithTargetRadixBadge');
+        const copyArithResultBtn = document.getElementById('copyArithResultBtn');
+        const twoLayerArithmeticBox = document.getElementById('twoLayerArithmeticBox');
+        const arithLongDivBox = document.getElementById('arithLongDivBox');
+        const matrixBaseLabel = document.getElementById('matrixBaseLabel');
+        const solutionPanelTitle = document.getElementById('solutionPanelTitle');
+        let selectedOperator = '+';
+
+        function initPage2Bases() {
+            for (let b = 2; b <= 36; b++) {
+                let label = `Base ${b}`;
+                if (b === 2) label += " (Binary)";
+                else if (b === 8) label += " (Octal)";
+                else if (b === 10) label += " (Decimal)";
+                else if (b === 16) label += " (Hexadecimal)";
+                arithSourceBase.add(new Option(label, b));
+                arithTargetBase.add(new Option(label, b));
+            }
+            arithSourceBase.value = 2;
+            arithTargetBase.value = 2;
+        }
+
+        function renderTwoLayerArithmeticMatrix(op1, op2, op, resultStr, base) {
+            const maxLen = Math.max(op1.length, op2.length, resultStr.length) + 2;
+            const padStr = (s, len) => s.padStart(len, ' ');
+
+            let html = `
+                <div class="text-xs text-slate-500 mb-2 border-b pb-1 font-bold">Column Layout (Base ${base}):</div>
+                <pre class="font-mono text-lg text-slate-800 leading-tight">
+  ${padStr(op1, maxLen)}
+<span class="text-emerald-600 font-bold">${op}</span> ${padStr(op2, maxLen - 2)}
+<span class="text-slate-400">${'─'.repeat(maxLen + 2)}</span>
+<span class="text-blue-600 font-extrabold">  ${padStr(resultStr, maxLen)}</span>
+                </pre>
+            `;
+            twoLayerArithmeticBox.innerHTML = html;
+        }
+
+        function renderArithmeticLongDivision(op1, op2, base, decResult) {
+            const cleanOp1 = op1.trim().toUpperCase();
+            const cleanOp2 = op2.trim().toUpperCase();
+            let quotientDisplay = decimalToTargetBase(decResult, base, 6);
+
+            let html = `
+                <div class="space-y-3 text-slate-800">
+                    <div class="text-xs font-bold text-slate-500 border-b pb-1">Long Division Layout (Base ${base}):</div>
+                    <div class="flex justify-center my-4 overflow-x-auto">
+                        <table class="long-div-table text-slate-800">
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-blue-600 font-extrabold border-b-2 border-slate-700" colspan="6">${quotientDisplay}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-emerald-600 pr-1">${cleanOp2}</td>
+                                <td class="div-bracket pr-2"></td>
+                                <td class="div-roof font-bold text-right" colspan="6">${cleanOp1}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+            arithLongDivBox.innerHTML = html;
+        }
+
+        function updateArithmetic() {
+            const srcBase = parseInt(arithSourceBase.value);
+            const tgtBase = parseInt(arithTargetBase.value);
+            const op1Str = operand1.value.trim();
+            const op2Str = operand2.value.trim();
+
+            matrixBaseLabel.innerText = `Base ${srcBase}`;
+            arithTargetRadixBadge.innerText = `Base ${tgtBase}`;
+
+            if (!isValidRadixNumber(op1Str, srcBase) || !isValidRadixNumber(op2Str, srcBase)) {
+                arithResultValue.innerText = "INVALID INPUT";
+                arithDecEquivalent.innerText = "Decimal: Error";
+                twoLayerArithmeticBox.innerHTML = `<span class="text-red-500">Invalid digits for selected base!</span>`;
+                arithLongDivBox.innerHTML = '';
+                return;
+            }
+
+            const v1 = parseToDecimal(op1Str, srcBase);
+            const v2 = parseToDecimal(op2Str, srcBase);
+
+            let decResult = 0;
+            if (selectedOperator === '+') decResult = v1 + v2;
+            else if (selectedOperator === '-') decResult = v1 - v2;
+            else if (selectedOperator === '*') decResult = v1 * v2;
+            else if (selectedOperator === '/') {
+                if (v2 === 0) {
+                    arithResultValue.innerText = "DIV BY ZERO";
+                    arithDecEquivalent.innerText = "Decimal: Undefined";
+                    return;
+                }
+                decResult = v1 / v2;
+            }
+
+            const tgtResultStr = decimalToTargetBase(decResult, tgtBase, 6);
+            const srcResultStr = decimalToTargetBase(decResult, srcBase, 6);
+
+            arithResultValue.innerText = tgtResultStr;
+            arithDecEquivalent.innerText = `Decimal Value: ${decResult}`;
+
+            if (selectedOperator === '/') {
+                solutionPanelTitle.innerText = "🧮 Long Division Layout";
+                twoLayerArithmeticBox.classList.add('hidden');
+                arithLongDivBox.classList.remove('hidden');
+                renderArithmeticLongDivision(op1Str, op2Str, srcBase, decResult);
+            } else {
+                solutionPanelTitle.innerText = "📝 Vertical Alignment Work";
+                arithLongDivBox.classList.add('hidden');
+                twoLayerArithmeticBox.classList.remove('hidden');
+                renderTwoLayerArithmeticMatrix(op1Str, op2Str, selectedOperator, srcResultStr, srcBase);
+            }
+        }
+
+        // Initialize Listeners
+        initPage1Bases();
+        initPage2Bases();
+
         inputValue.addEventListener('input', updateConverter);
         sourceBase.addEventListener('change', updateConverter);
         targetBase.addEventListener('change', updateConverter);
@@ -549,6 +759,27 @@
         copyResultBtn.addEventListener('click', () => {
             if (outputValue.innerText && outputValue.innerText !== '--') {
                 navigator.clipboard.writeText(outputValue.innerText);
+                alert('Copied answer to clipboard! 📋');
+            }
+        });
+
+        arithSourceBase.addEventListener('change', updateArithmetic);
+        arithTargetBase.addEventListener('change', updateArithmetic);
+        operand1.addEventListener('input', updateArithmetic);
+        operand2.addEventListener('input', updateArithmetic);
+
+        document.querySelectorAll('.op-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active-op'));
+                e.target.classList.add('active-op');
+                selectedOperator = e.target.getAttribute('data-op');
+                updateArithmetic();
+            });
+        });
+
+        copyArithResultBtn.addEventListener('click', () => {
+            if (arithResultValue.innerText && !arithResultValue.innerText.includes('INVALID')) {
+                navigator.clipboard.writeText(arithResultValue.innerText);
                 alert('Copied answer to clipboard! 📋');
             }
         });
