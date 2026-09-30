@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Notepad - Base Arithmetic</title>
+    <title>Math Notepad - Base Converter & Arithmetic Solver</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -86,6 +86,21 @@
         .div-roof { border-top: 2px solid #059669; }
         .div-bracket { border-left: 2px solid #059669; border-top-left-radius: 4px; }
         .minus-line { border-bottom: 2px dashed #64748b; }
+
+        /* Navigation Tab Active Styling */
+        .tab-btn.active-tab {
+            background-color: #ffffff !important;
+            color: #059669 !important;
+            border-bottom-color: #ffffff !important;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+        .tab-btn.inactive-tab {
+            background-color: #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        .tab-btn.inactive-tab:hover {
+            background-color: #f1f5f9 !important;
+        }
     </style>
 </head>
 <body class="min-h-screen py-8 px-4 sm:px-6">
@@ -93,15 +108,15 @@
     <div class="max-w-5xl mx-auto">
         <!-- Navigation Tabs -->
         <div class="flex items-center gap-3 ml-6 mb-[-2px] relative z-20">
-            <a href="page1_converter.html" class="bg-slate-200 border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all">
-                <i class="fa-solid fa-pencil text-amber-500"></i> Page 1: Base Converter
-            </a>
-            <a href="page2_arithmetic.html" class="bg-white border-2 border-b-0 border-slate-300 px-6 py-3 rounded-t-2xl font-bold text-emerald-600 shadow-sm flex items-center gap-2">
-                <i class="fa-solid fa-calculator text-emerald-500"></i> Page 2: Math Solver
-            </a>
+            <button id="tab1Btn" onclick="switchTab('tab1')" class="tab-btn active-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer">
+                <i class="fa-solid fa-pencil text-amber-500"></i> Base Converter
+            </button>
+            <button id="tab2Btn" onclick="switchTab('tab2')" class="tab-btn inactive-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer">
+                <i class="fa-solid fa-calculator text-emerald-500"></i> Math Solver
+            </button>
         </div>
 
-        <!-- Notebook Page Content -->
+        <!-- Notebook Page Content Wrapper -->
         <div class="grid-notebook-page rounded-2xl rounded-tl-none p-6 md:p-10 pl-10 md:pl-16 border-2 border-slate-300">
             
             <div class="spiral-binding hidden sm:flex">
@@ -110,118 +125,197 @@
                 <div class="ring"></div><div class="ring"></div><div class="ring"></div>
             </div>
 
-            <!-- Page Header -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-emerald-200 pb-4 mb-6 gap-4">
-                <div>
-                    <span class="inline-block bg-emerald-200 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
-                        📐 Math Lab Work
-                    </span>
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center gap-3">
-                        Any-Base Arithmetic Solver ➕➖
-                    </h1>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Left Column: Controls -->
-                <div class="lg:col-span-5 space-y-6">
-                    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 space-y-4">
-                        
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label for="arithSourceBase" class="block text-xs font-bold text-emerald-900 mb-1">Input Base:</label>
-                                <select id="arithSourceBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
-                            </div>
-                            <div>
-                                <label for="arithTargetBase" class="block text-xs font-bold text-emerald-900 mb-1">Answer Base:</label>
-                                <select id="arithTargetBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
-                            </div>
-                        </div>
-
-                        <!-- First Operand -->
-                        <div>
-                            <label for="operand1" class="block text-xs font-bold text-slate-700 mb-1">First Number (Top / Dividend):</label>
-                            <input type="text" id="operand1" value="1101" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
-                        </div>
-
-                        <!-- Operators -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Choose Operation:</label>
-                            <div class="grid grid-cols-4 gap-2">
-                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="+">+</button>
-                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="-">−</button>
-                                <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="*">×</button>
-                                <button class="op-btn active-op bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="/">÷</button>
-                            </div>
-                        </div>
-
-                        <!-- Second Operand -->
-                        <div>
-                            <label for="operand2" class="block text-xs font-bold text-slate-700 mb-1">Second Number (Bottom / Divisor):</label>
-                            <input type="text" id="operand2" value="11" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
-                        </div>
-
-                    </div>
-
-                    <!-- Result Box -->
-                    <div class="bg-blue-50 border-2 border-blue-300 rounded-2xl p-5 space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-blue-900 uppercase">🎯 Result Answer:</span>
-                            <span id="arithTargetRadixBadge" class="bg-blue-200 text-blue-900 font-bold text-xs px-2.5 py-0.5 rounded-full">Base 2</span>
-                        </div>
-                        <div class="bg-white border-2 border-blue-200 rounded-xl p-4 flex items-center justify-between">
-                            <div>
-                                <div id="arithResultValue" class="font-mono text-2xl font-extrabold text-blue-600 break-all">--</div>
-                                <div id="arithDecEquivalent" class="text-xs font-bold text-slate-500 mt-1">Decimal: --</div>
-                            </div>
-                            <button id="copyArithResultBtn" class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-lg text-xs" title="Copy Answer">
-                                <i class="fa-regular fa-copy text-base"></i>
-                            </button>
-                        </div>
+            <!-- ========================================================= -->
+            <!-- TAB 1: BASE CONVERTER PAGE -->
+            <!-- ========================================================= -->
+            <div id="tab1Content" class="space-y-6">
+                <!-- Page Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-amber-200 pb-4 mb-6 gap-4">
+                    <div>
+                        <span class="inline-block bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
+                            ✏️ Base Converter Workspace
+                        </span>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center gap-3">
+                            Number Base Converter
+                        </h1>
                     </div>
                 </div>
 
-                <!-- Right Column: Visual Worksheets -->
-                <div class="lg:col-span-7 space-y-6">
-                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 space-y-4">
-                        <div class="flex items-center justify-between border-b border-amber-200 pb-2">
-                            <h3 id="solutionPanelTitle" class="font-bold text-amber-900 text-sm flex items-center gap-2">
-                                📝 Vertical Column Alignment
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Controls -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="convSourceBase" class="block text-xs font-bold text-amber-900 mb-1">From Base:</label>
+                                    <select id="convSourceBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                                </div>
+                                <div>
+                                    <label for="convTargetBase" class="block text-xs font-bold text-amber-900 mb-1">To Base:</label>
+                                    <select id="convTargetBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="convInputNumber" class="block text-xs font-bold text-slate-700 mb-1">Number to Convert:</label>
+                                <input type="text" id="convInputNumber" value="1101" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
+                            </div>
+                        </div>
+
+                        <!-- Result Box -->
+                        <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-emerald-900 uppercase">🎯 Converted Result:</span>
+                                <span id="convTargetBadge" class="bg-emerald-200 text-emerald-900 font-bold text-xs px-2.5 py-0.5 rounded-full">Base 10</span>
+                            </div>
+                            <div class="bg-white border-2 border-emerald-200 rounded-xl p-4 flex items-center justify-between">
+                                <div>
+                                    <div id="convResultValue" class="font-mono text-2xl font-extrabold text-emerald-600 break-all">13</div>
+                                    <div id="convDecValue" class="text-xs font-bold text-slate-500 mt-1">Decimal Equivalent: 13</div>
+                                </div>
+                                <button id="copyConvBtn" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2.5 rounded-lg text-xs" title="Copy Answer">
+                                    <i class="fa-regular fa-copy text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Steps & Visual Breakdown -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-5 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b border-slate-200 pb-2">
+                                📖 Conversion Steps & Expansion Breakdown
                             </h3>
-                            <span id="matrixBaseLabel" class="text-xs font-bold bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full">Base 2</span>
+                            <div id="convStepsBox" class="space-y-3 font-mono text-xs"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <!-- Vertical Alignment Box -->
-                        <div id="twoLayerArithmeticBox" class="p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto"></div>
-
-                        <!-- Division Box -->
-                        <div id="arithLongDivBox" class="hidden p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto space-y-4"></div>
+            <!-- ========================================================= -->
+            <!-- TAB 2: BASE ARITHMETIC SOLVER PAGE -->
+            <!-- ========================================================= -->
+            <div id="tab2Content" class="hidden space-y-6">
+                <!-- Page Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-emerald-200 pb-4 mb-6 gap-4">
+                    <div>
+                        <span class="inline-block bg-emerald-200 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
+                            📐 Math Lab Work
+                        </span>
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center gap-3">
+                            Any-Base Arithmetic Solver ➕➖
+                        </h1>
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left Column: Controls -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 space-y-4">
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="arithSourceBase" class="block text-xs font-bold text-emerald-900 mb-1">Input Base:</label>
+                                    <select id="arithSourceBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                                </div>
+                                <div>
+                                    <label for="arithTargetBase" class="block text-xs font-bold text-emerald-900 mb-1">Answer Base:</label>
+                                    <select id="arithTargetBase" class="w-full px-3 py-2 rounded-xl text-sm font-bold text-slate-700"></select>
+                                </div>
+                            </div>
+
+                            <!-- First Operand -->
+                            <div>
+                                <label for="operand1" class="block text-xs font-bold text-slate-700 mb-1">First Number (Top / Dividend):</label>
+                                <input type="text" id="operand1" value="1101" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
+                            </div>
+
+                            <!-- Operators -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Choose Operation:</label>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="+">+</button>
+                                    <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="-">−</button>
+                                    <button class="op-btn bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="*">×</button>
+                                    <button class="op-btn active-op bg-white border-2 border-emerald-400 py-2 rounded-xl font-extrabold text-lg text-emerald-700" data-op="/">÷</button>
+                                </div>
+                            </div>
+
+                            <!-- Second Operand -->
+                            <div>
+                                <label for="operand2" class="block text-xs font-bold text-slate-700 mb-1">Second Number (Bottom / Divisor):</label>
+                                <input type="text" id="operand2" value="11" class="w-full px-4 py-2.5 rounded-xl font-mono text-lg text-slate-800">
+                            </div>
+
+                        </div>
+
+                        <!-- Result Box -->
+                        <div class="bg-blue-50 border-2 border-blue-300 rounded-2xl p-5 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-blue-900 uppercase">🎯 Result Answer:</span>
+                                <span id="arithTargetRadixBadge" class="bg-blue-200 text-blue-900 font-bold text-xs px-2.5 py-0.5 rounded-full">Base 2</span>
+                            </div>
+                            <div class="bg-white border-2 border-blue-200 rounded-xl p-4 flex items-center justify-between">
+                                <div>
+                                    <div id="arithResultValue" class="font-mono text-2xl font-extrabold text-blue-600 break-all">--</div>
+                                    <div id="arithDecEquivalent" class="text-xs font-bold text-slate-500 mt-1">Decimal: --</div>
+                                </div>
+                                <button id="copyArithResultBtn" class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-lg text-xs" title="Copy Answer">
+                                    <i class="fa-regular fa-copy text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Visual Worksheets -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 space-y-4">
+                            <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                                <h3 id="solutionPanelTitle" class="font-bold text-amber-900 text-sm flex items-center gap-2">
+                                    🧮 Long Division Layout & Subtractions
+                                </h3>
+                                <span id="matrixBaseLabel" class="text-xs font-bold bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full">Base 2</span>
+                            </div>
+
+                            <!-- Vertical Alignment Box -->
+                            <div id="twoLayerArithmeticBox" class="hidden p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto"></div>
+
+                            <!-- Division Box -->
+                            <div id="arithLongDivBox" class="p-4 rounded-xl bg-white border border-amber-200 font-mono text-sm overflow-x-auto space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
     <script>
         const RADIX_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        const arithSourceBase = document.getElementById('arithSourceBase');
-        const arithTargetBase = document.getElementById('arithTargetBase');
-        const operand1 = document.getElementById('operand1');
-        const operand2 = document.getElementById('operand2');
-        const arithResultValue = document.getElementById('arithResultValue');
-        const arithDecEquivalent = document.getElementById('arithDecEquivalent');
-        const arithTargetRadixBadge = document.getElementById('arithTargetRadixBadge');
-        const copyArithResultBtn = document.getElementById('copyArithResultBtn');
-        const twoLayerArithmeticBox = document.getElementById('twoLayerArithmeticBox');
-        const arithLongDivBox = document.getElementById('arithLongDivBox');
-        const matrixBaseLabel = document.getElementById('matrixBaseLabel');
-        const solutionPanelTitle = document.getElementById('solutionPanelTitle');
-        let selectedOperator = '/';
+        /* Navigation Tab Handler */
+        function switchTab(tabId) {
+            const tab1Content = document.getElementById('tab1Content');
+            const tab2Content = document.getElementById('tab2Content');
+            const tab1Btn = document.getElementById('tab1Btn');
+            const tab2Btn = document.getElementById('tab2Btn');
 
-        function initBaseOptions() {
+            if (tabId === 'tab1') {
+                tab1Content.classList.remove('hidden');
+                tab2Content.classList.add('hidden');
+                tab1Btn.className = "tab-btn active-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer";
+                tab2Btn.className = "tab-btn inactive-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer";
+            } else {
+                tab1Content.classList.add('hidden');
+                tab2Content.classList.remove('hidden');
+                tab2Btn.className = "tab-btn active-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer";
+                tab1Btn.className = "tab-btn inactive-tab border-2 border-slate-300 px-6 py-3 rounded-t-2xl font-bold flex items-center gap-2 transition-all cursor-pointer";
+            }
+        }
+
+        /* Shared Helper Functions */
+        function populateSelectOptions(selectElement, defaultVal) {
+            selectElement.innerHTML = '';
             for (let b = 2; b <= 36; b++) {
                 let label = `Base ${b}`;
                 if (b === 2) label += " (Binary)";
@@ -229,11 +323,9 @@
                 else if (b === 10) label += " (Decimal)";
                 else if (b === 16) label += " (Hexadecimal)";
 
-                arithSourceBase.add(new Option(label, b));
-                arithTargetBase.add(new Option(label, b));
+                selectElement.add(new Option(label, b));
             }
-            arithSourceBase.value = 2;
-            arithTargetBase.value = 2;
+            selectElement.value = defaultVal;
         }
 
         function isValidRadixNumber(str, base) {
@@ -300,6 +392,69 @@
             return fracStr.length > 0 ? `${intStr}.${fracStr}` : intStr;
         }
 
+        /* ========================================================= */
+        /* TAB 1: BASE CONVERTER LOGIC */
+        /* ========================================================= */
+        const convSourceBase = document.getElementById('convSourceBase');
+        const convTargetBase = document.getElementById('convTargetBase');
+        const convInputNumber = document.getElementById('convInputNumber');
+        const convResultValue = document.getElementById('convResultValue');
+        const convDecValue = document.getElementById('convDecValue');
+        const convTargetBadge = document.getElementById('convTargetBadge');
+        const convStepsBox = document.getElementById('convStepsBox');
+        const copyConvBtn = document.getElementById('copyConvBtn');
+
+        function updateConverter() {
+            const srcBase = parseInt(convSourceBase.value);
+            const tgtBase = parseInt(convTargetBase.value);
+            const inputVal = convInputNumber.value.trim().toUpperCase();
+
+            convTargetBadge.innerText = `Base ${tgtBase}`;
+
+            if (!isValidRadixNumber(inputVal, srcBase)) {
+                convResultValue.innerText = "INVALID INPUT";
+                convDecValue.innerText = "Decimal Equivalent: Error";
+                convStepsBox.innerHTML = `<div class="text-red-500 font-bold">Error: Digits in input '${inputVal}' are invalid for Base ${srcBase}!</div>`;
+                return;
+            }
+
+            const decVal = parseToDecimal(inputVal, srcBase);
+            const resultStr = decimalToTargetBase(decVal, tgtBase);
+
+            convResultValue.innerText = resultStr;
+            convDecValue.innerText = `Decimal Equivalent: ${decVal}`;
+
+            // Render Step-by-Step Explanation
+            let stepsHtml = `
+                <div class="bg-white p-3 rounded-xl border border-slate-200">
+                    <span class="font-bold text-amber-700">Step 1: Convert Input Base ${srcBase} → Decimal (Base 10)</span>
+                    <div class="text-slate-600 mt-1">Value = <span class="font-bold text-blue-600">${decVal}</span></div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200">
+                    <span class="font-bold text-emerald-700">Step 2: Convert Decimal (${decVal}) → Base ${tgtBase}</span>
+                    <div class="text-slate-600 mt-1">Result = <span class="font-bold text-emerald-600">${resultStr}</span></div>
+                </div>
+            `;
+            convStepsBox.innerHTML = stepsHtml;
+        }
+
+        /* ========================================================= */
+        /* TAB 2: BASE ARITHMETIC SOLVER LOGIC */
+        /* ========================================================= */
+        const arithSourceBase = document.getElementById('arithSourceBase');
+        const arithTargetBase = document.getElementById('arithTargetBase');
+        const operand1 = document.getElementById('operand1');
+        const operand2 = document.getElementById('operand2');
+        const arithResultValue = document.getElementById('arithResultValue');
+        const arithDecEquivalent = document.getElementById('arithDecEquivalent');
+        const arithTargetRadixBadge = document.getElementById('arithTargetRadixBadge');
+        const copyArithResultBtn = document.getElementById('copyArithResultBtn');
+        const twoLayerArithmeticBox = document.getElementById('twoLayerArithmeticBox');
+        const arithLongDivBox = document.getElementById('arithLongDivBox');
+        const matrixBaseLabel = document.getElementById('matrixBaseLabel');
+        const solutionPanelTitle = document.getElementById('solutionPanelTitle');
+        let selectedOperator = '/';
+
         function renderTwoLayerArithmeticMatrix(op1, op2, op, resultStr, base) {
             const maxLen = Math.max(op1.length, op2.length, resultStr.length) + 2;
             const padStr = (s, len) => s.padStart(len, ' ');
@@ -318,17 +473,12 @@
             twoLayerArithmeticBox.innerHTML = html;
         }
 
-        /* Full Interactive Long Division with Subtraction Step-by-Step */
         function renderArithmeticLongDivision(op1, op2, base, decResult) {
             const cleanOp1 = op1.trim().toUpperCase();
             const cleanOp2 = op2.trim().toUpperCase();
 
-            const dividendDec = parseToDecimal(cleanOp1, base);
             const divisorDec = parseToDecimal(cleanOp2, base);
-
-            // Compute integer division steps
             let currentVal = 0;
-            let quotientStr = "";
             let steps = [];
 
             for (let i = 0; i < cleanOp1.length; i++) {
@@ -351,10 +501,8 @@
                 });
 
                 currentVal = remainder;
-                quotientStr += RADIX_CHARS[qDigit];
             }
 
-            // Remove leading zeroes from quotient display
             let cleanQuotient = decimalToTargetBase(decResult, base, 4);
 
             let html = `
@@ -363,7 +511,6 @@
                         Long Division Bracket & Subtractions (Base ${base}):
                     </div>
 
-                    <!-- Long Division Visual Bracket -->
                     <div class="flex justify-center bg-white p-4 rounded-xl border border-amber-200">
                         <table class="long-div-table text-slate-800">
                             <tr>
@@ -378,7 +525,6 @@
                             </tr>
             `;
 
-            // Append each Subtraction step to table
             steps.forEach((st, idx) => {
                 if (st.product > 0 || idx === steps.length - 1) {
                     let prodStr = decimalToTargetBase(st.product, base, 0);
@@ -404,7 +550,6 @@
                         </table>
                     </div>
 
-                    <!-- Step-by-Step Subtraction Explanation Cards -->
                     <div class="space-y-2">
                         <div class="text-xs font-bold text-amber-900">🔍 Subtraction Breakdown Steps:</div>
             `;
@@ -453,7 +598,7 @@
             if (!isValidRadixNumber(op1Str, srcBase) || !isValidRadixNumber(op2Str, srcBase)) {
                 arithResultValue.innerText = "INVALID INPUT";
                 arithDecEquivalent.innerText = "Decimal: Error";
-                twoLayerArithmeticBox.innerHTML = `<span class="text-red-500">Invalid digits for selected base!</span>`;
+                twoLayerArithmeticBox.innerHTML = `<span class="text-red-500 font-bold">Invalid digits for selected base!</span>`;
                 arithLongDivBox.innerHTML = '';
                 return;
             }
@@ -493,7 +638,16 @@
             }
         }
 
-        initBaseOptions();
+        /* Initial Setup & Listeners */
+        populateSelectOptions(convSourceBase, 2);
+        populateSelectOptions(convTargetBase, 10);
+        populateSelectOptions(arithSourceBase, 2);
+        populateSelectOptions(arithTargetBase, 2);
+
+        convSourceBase.addEventListener('change', updateConverter);
+        convTargetBase.addEventListener('change', updateConverter);
+        convInputNumber.addEventListener('input', updateConverter);
+
         arithSourceBase.addEventListener('change', updateArithmetic);
         arithTargetBase.addEventListener('change', updateArithmetic);
         operand1.addEventListener('input', updateArithmetic);
@@ -508,13 +662,22 @@
             });
         });
 
-        copyArithResultBtn.addEventListener('click', () => {
-            if (arithResultValue.innerText && !arithResultValue.innerText.includes('INVALID')) {
-                navigator.clipboard.writeText(arithResultValue.innerText);
-                alert('Copied answer to clipboard! 📋');
+        copyConvBtn.addEventListener('click', () => {
+            if (convResultValue.innerText && !convResultValue.innerText.includes('INVALID')) {
+                navigator.clipboard.writeText(convResultValue.innerText);
+                alert('Copied converter result to clipboard! 📋');
             }
         });
 
+        copyArithResultBtn.addEventListener('click', () => {
+            if (arithResultValue.innerText && !arithResultValue.innerText.includes('INVALID')) {
+                navigator.clipboard.writeText(arithResultValue.innerText);
+                alert('Copied arithmetic result to clipboard! 📋');
+            }
+        });
+
+        // Run Initial Calculations
+        updateConverter();
         updateArithmetic();
     </script>
 </body>
