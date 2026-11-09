@@ -2,42 +2,159 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Number System Converter</title>
+    <title>Top Radix Calculator</title>
     <style>
-        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .nav { margin-bottom: 20px; }
+        .nav button { padding: 8px 16px; font-size: 16px; cursor: pointer; }
+        .page { display: none; }
+        .page.active { display: flex; }
+        .container { display: flex; gap: 40px; }
         .box { display: flex; flex-direction: column; gap: 10px; width: 250px; }
         input, select, button { padding: 8px; font-size: 16px; }
+        h3 { margin: 0 0 5px 0; font-size: 18px; }
+        .bool-box { display: flex; flex-direction: column; gap: 10px; width: 320px; }
+        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .keypad button { padding: 10px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <input type="text" id="val" placeholder="Enter value">
-        <select id="from">
-            <option value="10">Decimal</option>
-            <option value="2">Binary</option>
-            <option value="8">Octal</option>
-            <option value="16">Hexadecimal</option>
-        </select>
-        <select id="to">
-            <option value="10">Decimal</option>
-            <option value="2">Binary</option>
-            <option value="8">Octal</option>
-            <option value="16">Hexadecimal</option>
-        </select>
-        <button onclick="convert()">Convert</button>
-        <div id="res"></div>
+    <div class="nav">
+        <button onclick="switchPage('radix')">Radix Calculator</button>
+        <button onclick="switchPage('bool')">Boolean Calculator</button>
     </div>
+
+    <!-- Radix Page -->
+    <div id="radixPage" class="page active container">
+        <div class="box">
+            <h3>Conversion Calculator</h3>
+            <input type="text" id="val" placeholder="Enter value">
+            <select id="from">
+                <option value="10">Decimal</option>
+                <option value="2">Binary</option>
+                <option value="8">Octal</option>
+                <option value="16">Hexadecimal</option>
+            </select>
+            <select id="to">
+                <option value="10">Decimal</option>
+                <option value="2">Binary</option>
+                <option value="8">Octal</option>
+                <option value="16">Hexadecimal</option>
+            </select>
+            <button onclick="convert()">Convert</button>
+            <div id="res"></div>
+        </div>
+        <div class="box">
+            <h3>Addition Calculator</h3>
+            <input type="text" id="val1" placeholder="Enter value 1">
+            <select id="base1">
+                <option value="10">Decimal</option>
+                <option value="2">Binary</option>
+                <option value="8">Octal</option>
+                <option value="16">Hexadecimal</option>
+            </select>
+            <input type="text" id="val2" placeholder="Enter value 2">
+            <select id="base2">
+                <option value="10">Decimal</option>
+                <option value="2">Binary</option>
+                <option value="8">Octal</option>
+                <option value="16">Hexadecimal</option>
+            </select>
+            <select id="toAdd">
+                <option value="10">Decimal</option>
+                <option value="2">Binary</option>
+                <option value="8">Octal</option>
+                <option value="16">Hexadecimal</option>
+            </select>
+            <button onclick="addNums()">Add</button>
+            <div id="resAdd"></div>
+        </div>
+    </div>
+
+    <!-- Boolean Calculator Page -->
+    <div id="boolPage" class="page">
+        <div class="bool-box">
+            <h3>Boolean Calculator</h3>
+            <input type="text" id="boolExpr" placeholder="Expression e.g. A+B*!C">
+            <div class="keypad">
+                <button onclick="insertKey('A')">A</button>
+                <button onclick="insertKey('B')">B</button>
+                <button onclick="insertKey('C')">C</button>
+                <button onclick="insertKey('!')">!</button>
+                <button onclick="insertKey('+')">+</button>
+                <button onclick="insertKey('*')">*</button>
+                <button onclick="insertKey('(')">(</button>
+                <button onclick="insertKey(')')">)</button>
+                <button onclick="delKey()">DEL</button>
+            </div>
+            <button onclick="calcBool()">Evaluate</button>
+            <div id="resBool"></div>
+        </div>
+    </div>
+
 <script>
+function switchPage(p) {
+    document.getElementById('radixPage').classList.remove('active');
+    document.getElementById('boolPage').classList.remove('active');
+    if(p === 'radix') document.getElementById('radixPage').classList.add('active');
+    if(p === 'bool') document.getElementById('boolPage').classList.add('active');
+}
+
 function convert() {
     let v = document.getElementById('val').value, f = parseInt(document.getElementById('from').value), t = parseInt(document.getElementById('to').value);
     let d = parseInt(v, f);
     if (isNaN(d)) { document.getElementById('res').innerText = "Invalid"; return; }
     let r = d.toString(t).toUpperCase();
-    if (t === 10 && r.includes('.')) {
+    if (r.includes('.')) {
         let parts = r.split('.');
         r = parts[0] + '.' + (parts[1] + '00').substring(0, 2);
     }
     document.getElementById('res').innerText = "Result: " + r;
+}
+
+function addNums() {
+    let v1 = document.getElementById('val1').value, b1 = parseInt(document.getElementById('base1').value);
+    let v2 = document.getElementById('val2').value, b2 = parseInt(document.getElementById('base2').value);
+    let t = parseInt(document.getElementById('toAdd').value);
+    let d1 = parseInt(v1, b1), d2 = parseInt(v2, b2);
+    if (isNaN(d1) || isNaN(d2)) { document.getElementById('resAdd').innerText = "Invalid"; return; }
+    let sum = d1 + d2;
+    let r = sum.toString(t).toUpperCase();
+    if (r.includes('.')) {
+        let parts = r.split('.');
+        r = parts[0] + '.' + (parts[1] + '00').substring(0, 2);
+    }
+    document.getElementById('resAdd').innerText = "Result: " + r;
+}
+
+function insertKey(k) {
+    let input = document.getElementById('boolExpr');
+    input.value += k;
+}
+
+function delKey() {
+    let input = document.getElementById('boolExpr');
+    input.value = input.value.slice(0, -1);
+}
+
+function calcBool() {
+    let expr = document.getElementById('boolExpr').value;
+    try {
+        let jsExpr = expr.replace(/!/g, '!').replace(/\+/g, '||').replace(/\*/g, '&&');
+        let results = [];
+        for (let a of [0, 1]) {
+            for (let b of [0, 1]) {
+                for (let c of [0, 1]) {
+                    let A = a, B = b, C = c;
+                    let val = eval(jsExpr) ? 1 : 0;
+                    results.push(`A=${a}, B=${b}, C=${c} => ${val}`);
+                }
+            }
+        }
+        document.getElementById('resBool').innerHTML = results.join('<br>');
+    } catch(e) {
+        document.getElementById('resBool').innerText = "Invalid Expression";
+    }
 }
 </script>
 </body>
