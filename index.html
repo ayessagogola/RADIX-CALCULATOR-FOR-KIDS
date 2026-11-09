@@ -1,47 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Number System Converter</title>
-<style>
-  body { background-color: #00008B; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-  div { display: flex; flex-direction: column; gap: 10px; width: 250px; }
-  input { padding: 8px; font-size: 16px; }
-</style>
-</head>
+<html>
 <body>
-<div>
-  <label>Decimal</label>
-  <input type="number" step="any" id="dec" oninput="convert('dec')">
-  <label>Boolean (Binary)</label>
-  <input type="text" id="bin" oninput="convert('bin')">
-  <label>Octal</label>
-  <input type="text" id="oct" oninput="convert('oct')">
-  <label>Hexadecimal</label>
-  <input type="text" id="hex" oninput="convert('hex')">
-</div>
+<input id="v" placeholder="Value">
+<select id="t"><option>Dec->All</option><option>Bin->Dec</option><option>Oct->Dec</option><option>Hex->Dec</option></select>
+<button onclick="c()">Convert</button>
+<p id="r"></p>
 <script>
-function fmt(n) {
-  return isNaN(n) ? "" : Number.isInteger(n) ? n : n.toFixed(2);
-}
-function convert(src) {
-  let v = document.getElementById(src).value.trim();
-  let d = NaN;
-  if (src === 'dec') d = parseFloat(v);
-  else if (src === 'bin') d = parseInt(v, 2);
-  else if (src === 'oct') d = parseInt(v, 8);
-  else if (src === 'hex') d = parseInt(v, 16);
-
-  if (isNaN(d)) {
-    ['dec','bin','oct','hex'].forEach(id => { if (id !== src) document.getElementById(id).value = ''; });
-    return;
-  }
-
-  if (src !== 'dec') document.getElementById('dec').value = fmt(d);
-  if (src !== 'bin') document.getElementById('bin').value = d.toString(2);
-  if (src !== 'oct') document.getElementById('oct').value = d.toString(8);
-  if (src !== 'hex') document.getElementById('hex').value = d.toString(16).toUpperCase();
+function c() {
+  let v = document.getElementById('v').value, t = document.getElementById('t').value, r = '';
+  if(t=='Dec->All') {
+    let n = parseFloat(v);
+    if(isNaN(n)) {r='Invalid';} else {
+      r = `Bin: ${n.toString(2)}<br>Oct: ${n.toString(8)}<br>Hex: ${n.toString(16).toUpperCase()}`;
+    }
+  } else if(t=='Bin->Dec') r = parseInt(v, 2).toFixed(2);
+    else if(t=='Oct->Dec') r = parseInt(v, 8).toFixed(2);
+    else if(t=='Hex->Dec') r = parseInt(v, 16).toFixed(2);
+  document.getElementById('r').innerHTML = isNaN(r)?'Invalid':r;
 }
 </script>
+<style>body{background:#00008B;color:#fff;font-family:sans-serif;padding:20px}</style>
 </body>
 </html>
