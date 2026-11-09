@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number System Converter</title>
+    <style>
+        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { display: flex; flex-direction: column; gap: 10px; width: 250px; }
+        input, select, button { padding: 8px; font-size: 16px; }
+    </style>
+</head>
 <body>
-<input id="v" placeholder="Value">
-<select id="t"><option>Dec->All</option><option>Bin->Dec</option><option>Oct->Dec</option><option>Hex->Dec</option></select>
-<button onclick="c()">Convert</button>
-<p id="r"></p>
+    <div class="box">
+        <input type="text" id="val" placeholder="Enter value">
+        <select id="from">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+        <select id="to">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+        <button onclick="convert()">Convert</button>
+        <div id="res"></div>
+    </div>
 <script>
-function c() {
-  let v = document.getElementById('v').value, t = document.getElementById('t').value, r = '';
-  if(t=='Dec->All') {
-    let n = parseFloat(v);
-    if(isNaN(n)) {r='Invalid';} else {
-      r = `Bin: ${n.toString(2)}<br>Oct: ${n.toString(8)}<br>Hex: ${n.toString(16).toUpperCase()}`;
+function convert() {
+    let v = document.getElementById('val').value, f = parseInt(document.getElementById('from').value), t = parseInt(document.getElementById('to').value);
+    let d = parseInt(v, f);
+    if (isNaN(d)) { document.getElementById('res').innerText = "Invalid"; return; }
+    let r = d.toString(t).toUpperCase();
+    if (t === 10 && r.includes('.')) {
+        let parts = r.split('.');
+        r = parts[0] + '.' + (parts[1] + '00').substring(0, 2);
     }
-  } else if(t=='Bin->Dec') r = parseInt(v, 2).toFixed(2);
-    else if(t=='Oct->Dec') r = parseInt(v, 8).toFixed(2);
-    else if(t=='Hex->Dec') r = parseInt(v, 16).toFixed(2);
-  document.getElementById('r').innerHTML = isNaN(r)?'Invalid':r;
+    document.getElementById('res').innerText = "Result: " + r;
 }
 </script>
-<style>body{background:#00008B;color:#fff;font-family:sans-serif;padding:20px}</style>
 </body>
 </html>
