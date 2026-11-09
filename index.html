@@ -4,28 +4,18 @@
     <meta charset="UTF-8">
     <title>Top Radix Calculator</title>
     <style>
-        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .nav { margin-bottom: 20px; }
-        .nav button { padding: 8px 16px; font-size: 16px; cursor: pointer; }
-        .page { display: none; }
-        .page.active { display: flex; }
-        .container { display: flex; gap: 40px; }
+        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
         .box { display: flex; flex-direction: column; gap: 10px; width: 250px; }
         input, select, button { padding: 8px; font-size: 16px; }
-        h3 { margin: 0 0 5px 0; font-size: 18px; }
-        .bool-box { display: flex; flex-direction: column; gap: 10px; width: 320px; }
+        h3 { margin: 0 0 5px 0; font-size: 18px; text-align: center; }
         .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
         .keypad button { padding: 10px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="nav">
-        <button onclick="switchPage('radix')">Radix Calculator</button>
-        <button onclick="switchPage('bool')">Boolean Calculator</button>
-    </div>
-
-    <!-- Radix Page -->
-    <div id="radixPage" class="page active container">
+    <div class="container">
+        <!-- Conversion Calculator -->
         <div class="box">
             <h3>Conversion Calculator</h3>
             <input type="text" id="val" placeholder="Enter value">
@@ -44,6 +34,8 @@
             <button onclick="convert()">Convert</button>
             <div id="res"></div>
         </div>
+
+        <!-- Addition Calculator -->
         <div class="box">
             <h3>Addition Calculator</h3>
             <input type="text" id="val1" placeholder="Enter value 1">
@@ -69,11 +61,9 @@
             <button onclick="addNums()">Add</button>
             <div id="resAdd"></div>
         </div>
-    </div>
 
-    <!-- Boolean Calculator Page -->
-    <div id="boolPage" class="page">
-        <div class="bool-box">
+        <!-- Boolean Calculator -->
+        <div class="box">
             <h3>Boolean Calculator</h3>
             <input type="text" id="boolExpr" placeholder="Expression e.g. A+B*!C">
             <div class="keypad">
@@ -93,13 +83,6 @@
     </div>
 
 <script>
-function switchPage(p) {
-    document.getElementById('radixPage').classList.remove('active');
-    document.getElementById('boolPage').classList.remove('active');
-    if(p === 'radix') document.getElementById('radixPage').classList.add('active');
-    if(p === 'bool') document.getElementById('boolPage').classList.add('active');
-}
-
 function convert() {
     let v = document.getElementById('val').value, f = parseInt(document.getElementById('from').value), t = parseInt(document.getElementById('to').value);
     let d = parseInt(v, f);
