@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Radix and Boolean Calculator</title>
+    <title>Top Radix Calculator</title>
     <style>
         body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
@@ -129,8 +129,11 @@ function calcBool() {
             for (let b of [0, 1]) {
                 for (let c of [0, 1]) {
                     let A = a, B = b, C = c;
-                    let val = eval(jsExpr) ? 1 : 0;
-                    results.push(`A=${a}, B=${b}, C=${c} => ${val}`);
+                    let val = eval(jsExpr);
+                    let litA = a === 1 ? 'A' : '!A';
+                    let litB = b === 1 ? 'B' : '!B';
+                    let litC = c === 1 ? 'C' : '!C';
+                    results.push(A=${a}, B=${b}, C=${c} => ${val ? `(${litA} * ${litB} * ${litC}) : '0'}`);
                 }
             }
         }
