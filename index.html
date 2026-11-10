@@ -67,17 +67,17 @@
             <h3>Boolean Calculator</h3>
             <input type="text" id="boolExpr" placeholder="Expression e.g. A+B*!C">
             <div class="keypad">
-                <button onclick="insertKey('A')">A</button>
-                <button onclick="insertKey('B')">B</button>
-                <button onclick="insertKey('C')">C</button>
-                <button onclick="insertKey('!')">!</button>
-                <button onclick="insertKey('+')">+</button>
-                <button onclick="insertKey('*')">*</button>
-                <button onclick="insertKey('(')">(</button>
-                <button onclick="insertKey(')')">)</button>
-                <button onclick="delKey()" style="grid-column: span 4;">DEL</button>
+                <button type="button" onclick="insertKey('A')">A</button>
+                <button type="button" onclick="insertKey('B')">B</button>
+                <button type="button" onclick="insertKey('C')">C</button>
+                <button type="button" onclick="insertKey('!')">!</button>
+                <button type="button" onclick="insertKey('+')">+</button>
+                <button type="button" onclick="insertKey('*')">*</button>
+                <button type="button" onclick="insertKey('(')">(</button>
+                <button type="button" onclick="insertKey(')')">)</button>
+                <button type="button" onclick="delKey()" style="grid-column: span 4;">DEL</button>
             </div>
-            <button onclick="calcBool()">Evaluate</button>
+            <button type="button" onclick="calcBool()">Evaluate</button>
             <div id="resBool"></div>
         </div>
     </div>
@@ -121,7 +121,6 @@ function delKey() {
 }
 
 function formatComplement(str) {
-    // Converts e.g. "!A" to "A&#773;" (overbar look) or format with overbars
     return str.replace(/!([A-C])/g, '$1&#773;');
 }
 
@@ -151,3 +150,4 @@ function calcBool() {
 </script>
 </body>
 </html>
+
