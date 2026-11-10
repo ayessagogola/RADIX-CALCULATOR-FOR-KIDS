@@ -6,7 +6,7 @@
     <style>
         body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
-        .box { display: flex; flex-direction: column; gap: 10px; width: 250px; }
+        .box { display: flex; flex-direction: column; gap: 10px; width: 260px; }
         input, select, button { padding: 8px; font-size: 16px; }
         h3 { margin: 0 0 5px 0; font-size: 18px; text-align: center; }
         .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
@@ -75,7 +75,7 @@
                 <button onclick="insertKey('*')">*</button>
                 <button onclick="insertKey('(')">(</button>
                 <button onclick="insertKey(')')">)</button>
-                <button onclick="delKey()">DEL</button>
+                <button onclick="delKey()" style="grid-column: span 4;">DEL</button>
             </div>
             <button onclick="calcBool()">Evaluate</button>
             <div id="resBool"></div>
@@ -120,6 +120,11 @@ function delKey() {
     input.value = input.value.slice(0, -1);
 }
 
+function formatComplement(str) {
+    // Converts e.g. "!A" to "A&#773;" (overbar look) or format with overbars
+    return str.replace(/!([A-C])/g, '$1&#773;');
+}
+
 function calcBool() {
     let expr = document.getElementById('boolExpr').value;
     try {
@@ -133,7 +138,8 @@ function calcBool() {
                     let litA = a === 1 ? 'A' : '!A';
                     let litB = b === 1 ? 'B' : '!B';
                     let litC = c === 1 ? 'C' : '!C';
-                    results.push(A=${a}, B=${b}, C=${c} => ${val ? `(${litA} * ${litB} * ${litC}) : '0'}`);
+                    let term = val ? (${litA} * ${litB} * ${litC}) : '0';
+                    results.push(A=${a}, B=${b}, C=${c} => ${formatComplement(term)});
                 }
             }
         }
