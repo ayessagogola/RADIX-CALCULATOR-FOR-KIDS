@@ -1,153 +1,391 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Top Radix Calculator</title>
-    <style>
-        body { background-color: #000033; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
-        .box { display: flex; flex-direction: column; gap: 10px; width: 260px; }
-        input, select, button { padding: 8px; font-size: 16px; }
-        h3 { margin: 0 0 5px 0; font-size: 18px; text-align: center; }
-        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-        .keypad button { padding: 10px; font-size: 16px; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radix Calculator</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    background: #000033;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 25px;
+    width: 100%;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+.box {
+    background: #080845;
+    border: 1px solid #292966;
+    border-radius: 12px;
+    padding: 25px;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+h3 {
+    font-size: 23px;
+    text-align: center;
+    margin: 0 0 10px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 7px;
+    border: none;
+}
+
+input, select {
+    background: white;
+    color: #111;
+}
+
+button {
+    background: #2525a0;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #4141cc;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.keypad button {
+    padding: 15px 5px;
+    font-size: 20px;
+}
+
+.result {
+    background: #000022;
+    border-radius: 7px;
+    padding: 15px;
+    min-height: 55px;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    body { padding: 15px; }
+    .box { width: 100%; }
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Conversion Calculator -->
-        <div class="box">
-            <h3>Conversion Calculator</h3>
-            <input type="text" id="val" placeholder="Enter value">
-            <select id="from">
-                <option value="10">Decimal</option>
-                <option value="2">Binary</option>
-                <option value="8">Octal</option>
-                <option value="16">Hexadecimal</option>
-            </select>
-            <select id="to">
-                <option value="10">Decimal</option>
-                <option value="2">Binary</option>
-                <option value="8">Octal</option>
-                <option value="16">Hexadecimal</option>
-            </select>
-            <button onclick="convert()">Convert</button>
-            <div id="res"></div>
-        </div>
 
-        <!-- Addition Calculator -->
-        <div class="box">
-            <h3>Addition Calculator</h3>
-            <input type="text" id="val1" placeholder="Enter value 1">
-            <select id="base1">
-                <option value="10">Decimal</option>
-                <option value="2">Binary</option>
-                <option value="8">Octal</option>
-                <option value="16">Hexadecimal</option>
-            </select>
-            <input type="text" id="val2" placeholder="Enter value 2">
-            <select id="base2">
-                <option value="10">Decimal</option>
-                <option value="2">Binary</option>
-                <option value="8">Octal</option>
-                <option value="16">Hexadecimal</option>
-            </select>
-            <select id="toAdd">
-                <option value="10">Decimal</option>
-                <option value="2">Binary</option>
-                <option value="8">Octal</option>
-                <option value="16">Hexadecimal</option>
-            </select>
-            <button onclick="addNums()">Add</button>
-            <div id="resAdd"></div>
-        </div>
+<div class="container">
 
-        <!-- Boolean Calculator -->
-        <div class="box">
-            <h3>Boolean Calculator</h3>
-            <input type="text" id="boolExpr" placeholder="Expression e.g. A+B*!C">
-            <div class="keypad">
-                <button type="button" onclick="insertKey('A')">A</button>
-                <button type="button" onclick="insertKey('B')">B</button>
-                <button type="button" onclick="insertKey('C')">C</button>
-                <button type="button" onclick="insertKey('!')">!</button>
-                <button type="button" onclick="insertKey('+')">+</button>
-                <button type="button" onclick="insertKey('*')">*</button>
-                <button type="button" onclick="insertKey('(')">(</button>
-                <button type="button" onclick="insertKey(')')">)</button>
-                <button type="button" onclick="delKey()" style="grid-column: span 4;">DEL</button>
-            </div>
-            <button type="button" onclick="calcBool()">Evaluate</button>
-            <div id="resBool"></div>
-        </div>
+    <!-- CONVERSION CALCULATOR -->
+    <div class="box">
+        <h3>Conversion Calculator</h3>
+
+        <input id="val" type="text" placeholder="Enter value">
+
+        <select id="from">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+
+        <select id="to">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+
+        <button onclick="convert()">Convert</button>
+        <div class="result" id="res">Result:</div>
     </div>
 
+
+    <!-- ADDITION CALCULATOR -->
+    <div class="box">
+        <h3>Addition Calculator</h3>
+
+        <input id="val1" type="text" placeholder="Enter value 1">
+
+        <select id="base1">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+
+        <input id="val2" type="text" placeholder="Enter value 2">
+
+        <select id="base2">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+
+        <select id="toAdd">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="8">Octal</option>
+            <option value="16">Hexadecimal</option>
+        </select>
+
+        <button onclick="addNums()">Add</button>
+        <div class="result" id="resAdd">Result:</div>
+    </div>
+
+
+    <!-- BOOLEAN CALCULATOR -->
+    <div class="box">
+        <h3>Boolean Calculator</h3>
+
+        <input id="boolExpr" type="text"
+        placeholder="Enter Boolean expression">
+
+        <div class="keypad">
+            <button onclick="insertKey('A')">A</button>
+            <button onclick="insertKey('B')">B</button>
+            <button onclick="insertKey('C')">C</button>
+            <button onclick="insertKey('!')">!</button>
+            <button onclick="insertKey('+')">+</button>
+            <button onclick="insertKey('*')">*</button>
+            <button onclick="insertKey('(')">(</button>
+            <button onclick="insertKey(')')">)</button>
+            <button onclick="delKey()">DEL</button>
+            <button onclick="clearBool()">CLR</button>
+        </div>
+
+        <button onclick="calcBool()">Simplify</button>
+        <div class="result" id="resBool">Result:</div>
+    </div>
+
+</div>
+
+
 <script>
+
+// CONVERSION CALCULATOR
+
 function convert() {
-    let v = document.getElementById('val').value, f = parseInt(document.getElementById('from').value), t = parseInt(document.getElementById('to').value);
-    let d = parseInt(v, f);
-    if (isNaN(d)) { document.getElementById('res').innerText = "Invalid"; return; }
-    let r = d.toString(t).toUpperCase();
-    if (r.includes('.')) {
-        let parts = r.split('.');
-        r = parts[0] + '.' + (parts[1] + '00').substring(0, 2);
+    let v = document.getElementById('val').value.trim();
+    let f = +document.getElementById('from').value;
+    let t = +document.getElementById('to').value;
+    let valid = {
+        2: /^[01]+$/,
+        8: /^[0-7]+$/,
+        10: /^\d+$/,
+        16: /^[0-9a-f]+$/i
+    };
+
+    if (!valid[f].test(v)) {
+        res.innerText = "Invalid input";
+        return;
     }
-    document.getElementById('res').innerText = "Result: " + r;
+
+    let d = parseInt(v, f);
+    res.innerText = "Result: " + d.toString(t).toUpperCase();
 }
+
+
+// ADDITION CALCULATOR
 
 function addNums() {
-    let v1 = document.getElementById('val1').value, b1 = parseInt(document.getElementById('base1').value);
-    let v2 = document.getElementById('val2').value, b2 = parseInt(document.getElementById('base2').value);
-    let t = parseInt(document.getElementById('toAdd').value);
-    let d1 = parseInt(v1, b1), d2 = parseInt(v2, b2);
-    if (isNaN(d1) || isNaN(d2)) { document.getElementById('resAdd').innerText = "Invalid"; return; }
-    let sum = d1 + d2;
-    let r = sum.toString(t).toUpperCase();
-    if (r.includes('.')) {
-        let parts = r.split('.');
-        r = parts[0] + '.' + (parts[1] + '00').substring(0, 2);
+    let v1 = val1.value.trim();
+    let v2 = val2.value.trim();
+    let b1 = +base1.value;
+    let b2 = +base2.value;
+    let t = +toAdd.value;
+
+    let valid = {
+        2: /^[01]+$/,
+        8: /^[0-7]+$/,
+        10: /^\d+$/,
+        16: /^[0-9a-f]+$/i
+    };
+
+    if (!valid[b1].test(v1) || !valid[b2].test(v2)) {
+        resAdd.innerText = "Invalid input";
+        return;
     }
-    document.getElementById('resAdd').innerText = "Result: " + r;
+
+    let sum = parseInt(v1, b1) + parseInt(v2, b2);
+    resAdd.innerText = "Result: " + sum.toString(t).toUpperCase();
 }
 
+
+// BOOLEAN KEYPAD
+
 function insertKey(k) {
-    let input = document.getElementById('boolExpr');
-    input.value += k;
+    boolExpr.value += k;
 }
 
 function delKey() {
-    let input = document.getElementById('boolExpr');
-    input.value = input.value.slice(0, -1);
+    boolExpr.value = boolExpr.value.slice(0, -1);
 }
 
-function formatComplement(str) {
-    return str.replace(/!([A-C])/g, '$1&#773;');
+function clearBool() {
+    boolExpr.value = "";
+    resBool.innerText = "Result:";
 }
+
+
+// BOOLEAN SIMPLIFICATION
 
 function calcBool() {
-    let expr = document.getElementById('boolExpr').value;
+    let expr = boolExpr.value.trim();
+
     try {
-        let jsExpr = expr.replace(/!/g, '!').replace(/\+/g, '||').replace(/\*/g, '&&');
-        let results = [];
-        for (let a of [0, 1]) {
-            for (let b of [0, 1]) {
-                for (let c of [0, 1]) {
-                    let A = a, B = b, C = c;
-                    let val = eval(jsExpr);
-                    let litA = a === 1 ? 'A' : '!A';
-                    let litB = b === 1 ? 'B' : '!B';
-                    let litC = c === 1 ? 'C' : '!C';
-                    let term = val ? (${litA} * ${litB} * ${litC}) : '0';
-                    results.push(A=${a}, B=${b}, C=${c} => ${formatComplement(term)});
+        if (!expr || !/^[ABCabc!+*()\s]+$/.test(expr))
+            throw Error();
+
+        // Convert Boolean operators
+        let js = expr.toUpperCase()
+            .replace(/\+/g, '||')
+            .replace(/\*/g, '&&');
+
+        let terms = [];
+
+        // Generate truth combinations
+        for (let a of [0,1])
+        for (let b of [0,1])
+        for (let c of [0,1]) {
+            let A = !!a, B = !!b, C = !!c;
+            let value = Function('A','B','C',
+                'return (' + js + ')')(A,B,C);
+
+            if (value) terms.push(''+a+b+c);
+        }
+
+        if (terms.length === 0) {
+            resBool.innerText = "Result: 0";
+            return;
+        }
+
+        if (terms.length === 8) {
+            resBool.innerText = "Result: 1";
+            return;
+        }
+
+        // Find valid Boolean groups
+        let cubes = [];
+
+        for (let x of ['0','1','-'])
+        for (let y of ['0','1','-'])
+        for (let z of ['0','1','-']) {
+            let p = x+y+z;
+            let covered = [];
+            let matches = [];
+
+            for (let a of [0,1])
+            for (let b of [0,1])
+            for (let c of [0,1]) {
+                let bits = ''+a+b+c;
+
+                if ([0,1,2].every(i =>
+                    p[i] === '-' || p[i] === bits[i])) {
+                    matches.push(bits);
                 }
             }
+
+            if (matches.every(m => terms.includes(m))) {
+                covered = matches;
+
+                cubes.push({
+                    p,
+                    covered,
+                    count: [...p].filter(v => v !== '-').length
+                });
+            }
         }
-        document.getElementById('resBool').innerHTML = results.join('<br>');
+
+        // Find minimum expression
+        let best = null;
+        let target = new Set(terms);
+
+        function search(chosen, covered) {
+            if ([...target].every(m => covered.has(m))) {
+                let score = [
+                    chosen.length,
+                    chosen.reduce((s,c) => s+c.count, 0)
+                ];
+
+                if (!best || score[0] < best.score[0] ||
+                    (score[0] === best.score[0] &&
+                     score[1] < best.score[1])) {
+                    best = {chosen:[...chosen], score};
+                }
+                return;
+            }
+
+            if (best && chosen.length >= best.score[0]) return;
+
+            let missing = [...target].find(m => !covered.has(m));
+
+            for (let cube of cubes) {
+                if (!cube.covered.includes(missing)) continue;
+                if (chosen.includes(cube)) continue;
+
+                let next = new Set(covered);
+                cube.covered.forEach(m => next.add(m));
+
+                search([...chosen,cube],next);
+            }
+        }
+
+        search([],new Set());
+
+        // Convert groups into Boolean expressions
+        function makeExpression(p) {
+            let vars = ['A','B','C'];
+            let result = [];
+
+            [...p].forEach((v,i) => {
+                if (v === '1') result.push(vars[i]);
+                if (v === '0') result.push('!'+vars[i]);
+            });
+
+            return result.join('*');
+        }
+
+        let answer = best.chosen
+            .map(c => makeExpression(c.p))
+            .join(' + ');
+
+        resBool.innerText = "Result: " + answer;
+
     } catch(e) {
-        document.getElementById('resBool').innerText = "Invalid Expression";
+        resBool.innerText = "Invalid Boolean Expression";
     }
 }
+
 </script>
+
 </body>
 </html>
-
